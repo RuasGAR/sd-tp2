@@ -24,6 +24,6 @@ use super::adder;
 use crate::utils::generate_num_vec;
 
 pub fn basic_test() {
-    let n_vec = generate_num_vec(10);
-    adder::threaded_sum(100,1,n_vec);
+    let n_vec = generate_num_vec(100);
+    adder::threaded_sum(100,50,n_vec);
 }
