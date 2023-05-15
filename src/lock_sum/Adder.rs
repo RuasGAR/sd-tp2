@@ -5,6 +5,7 @@ use std::fs::OpenOptions;
 use std::io::Write;
 use super::lock::Lock as Lock;
 
+
 pub static mut ACC_LOCK:Lock<i64> = Lock::new(0); 
 pub static mut EXPECTED_RES:Lock<i64> = Lock::new(0);
 
@@ -25,13 +26,14 @@ pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
     let n_vec = Arc::new(n_vec);
     let workload_each:usize = n/k; // quantos números cada thread vai usar
     let need_for_adjustments:bool = n%k != 0;
-
+    println!("Workload each:{}",workload_each);
     // Início do escopo de computação distribuída
     let t_start = Instant::now();
+    
     thread::scope(|s|{
         
         for i in 0..k {
-
+            
             s.spawn({
 
                 // Clonagem da referência para n_vec
@@ -72,13 +74,17 @@ pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
                 let end_index:usize;
                 
                 if need_for_adjustments && (i == k-1) {
-                    start_index = (k-1) * workload_each;
+                    start_index = i * workload_each;
                     end_index = n_vec.len();
                 } else {
                     start_index = i * workload_each;
-                    end_index = start_index + if i==k {workload_each-1} else {workload_each};
+                    end_index = start_index + workload_each;
                 }
 
+                //DEBUG dos INDEX
+                //println!("start_index: {}",start_index);
+                //println!("end_index:{}", end_index);
+                
                 // ROTINA EXECUTADA POR CADA THREAD
                 move || {    
                     let mut partial_result:i64 = 0;
@@ -90,13 +96,18 @@ pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
     
                     unsafe { 
                         let mut guard = ACC_LOCK.acquire();
-                        *guard += partial_result;
+                        *guard = *guard + partial_result;
                         ACC_LOCK.release();
+                        
+                        // Prints para debug antes do acquire ou do release
+                        // println!("Valor da guard:{}",*guard);
+                        // println!("Valor da partial result:{}",&partial_result);
                     }
                 }
             });
         }
     });
+    
 
     // Registro do tempo no arquivo correspondente
     let t_taken = t_start.elapsed().as_secs_f64();
@@ -119,21 +130,28 @@ pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
 
     }).join().unwrap();
 
-    
+    /* 
+        IMPORTANTE: 
+        -> Como as variáveis de lock precisaram ser globais - dada a implicância do Rust -
+        é necessário resetá-las em 0, para que não afetem a próxima iteração. 
+     */
+
     let printable_distributed_sum:i64;
     let printable_single_sum:i64;
     unsafe {
         
-        let ds_guard = ACC_LOCK.acquire();
+        let mut ds_guard = ACC_LOCK.acquire();
         printable_distributed_sum = *ds_guard as i64;
+        *ds_guard = 0;
         ACC_LOCK.release();
 
-        let single_guard = EXPECTED_RES.acquire();
+        let mut single_guard = EXPECTED_RES.acquire();
         printable_single_sum = *single_guard as i64;
+        *single_guard = 0;
         EXPECTED_RES.release();
     }
 
-
+    // Prints pra checar corretude  
     println!("Valor obtido pela soma direta: {}",&printable_single_sum);
     println!("Valor obtido pela soma distribuída: {}",&printable_distributed_sum);
 
