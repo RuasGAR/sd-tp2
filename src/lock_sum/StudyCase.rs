@@ -1,27 +1,28 @@
-/* fn main() {
+use super::adder;
+use crate::utils::generate_num_vec;
+
+pub fn study_case() {
 
     // Número de threads possíveis
-    let k_array: [i16,9] = [1,2,4,8,16,32,64,128,256];
+    let k_array: [usize;9] = [1,2,4,8,16,32,64,128,256];
     
     // Tamanho dos vetores a serem testados
-    let base = 10i64;
-    let input_sizes: [i64,3] = [checked_pow(base,7),checked_pow(base,8),checked_pow(base,9)];
+    let base = 10usize;
+    let input_sizes: [usize;3] = [base.pow(7),base.pow(8),base.pow(9)];
 
-    for i in 0..10 {
+    for _i in 0..10 {
         for k in k_array {
             for n in input_sizes {
-                // gerar array de números
-                // separar as threads
-                // contabilizar quanto cada uma demora e guardar isso de alguma forma
+                println!("Começando programa: N = {} e K = {}",n,k);
+                let n_vec = generate_num_vec(n as i64);
+                adder::threaded_sum(n, k, n_vec);
+                println!("Encerrando programa: N = {} e K = {}",n,k);
             }
         } 
     }
 
-}  */
+} 
 
-
-use super::adder;
-use crate::utils::generate_num_vec;
 
 pub fn basic_test() {
     let n_vec = generate_num_vec(100);

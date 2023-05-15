@@ -1,5 +1,8 @@
 use std::thread;
+use std::time::Instant;
 use std::sync::{Arc};
+use std::fs::OpenOptions;
+use std::io::Write;
 use super::lock::Lock as Lock;
 
 pub static mut ACC_LOCK:Lock<i64> = Lock::new(0); 
@@ -7,18 +10,24 @@ pub static mut EXPECTED_RES:Lock<i64> = Lock::new(0);
 
 pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
 
-    let n_vec = Arc::new(n_vec);
+    // Criação de arquivo dinamicamente. Será gerado um arquivo para cada combinação de N e K
+    let filename = format!("./results/{}_{}_bench.txt",n,k);
+    let mut f = OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(filename)
+                .expect("Ocorreu um erro na abertura do arquivo!");
 
     /* 
         Lógica para dividir o trabalho entre todas as threads. 
         A última deve ficar com os dados restantes da divisão de N pelas K-threads
     */
+    let n_vec = Arc::new(n_vec);
     let workload_each:usize = n/k; // quantos números cada thread vai usar
     let need_for_adjustments:bool = n%k != 0;
 
-    print!("workload each:{}\n",workload_each);
-
-
+    // Início do escopo de computação distribuída
+    let t_start = Instant::now();
     thread::scope(|s|{
         
         for i in 0..k {
@@ -70,9 +79,6 @@ pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
                     end_index = start_index + if i==k {workload_each-1} else {workload_each};
                 }
 
-                print!("Start_index:{}\n", start_index);
-                print!("End_index:{}\n", end_index);
-
                 // ROTINA EXECUTADA POR CADA THREAD
                 move || {    
                     let mut partial_result:i64 = 0;
@@ -92,8 +98,11 @@ pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
         }
     });
 
-    // Thread para computar a soma de uma vez e checar se tá correto
+    // Registro do tempo no arquivo correspondente
+    let t_taken = t_start.elapsed().as_secs_f64();
+    writeln!(f, "{:?}", t_taken).expect("Erro na escrita do arquivo.");
 
+    // Thread para computar a soma de uma vez e checar se tá correto
     thread::spawn(move||{ 
 
         let mut sum:i64 = 0;

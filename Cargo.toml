@@ -7,5 +7,3 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.4"
-you-can = "0.0.14"
-sync-unsafe-cell = "0.1.0"
