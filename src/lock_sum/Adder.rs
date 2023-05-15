@@ -1,5 +1,5 @@
 use std::thread;
-use std::sync::{Arc, WaitTimeoutResult};
+use std::sync::{Arc};
 use super::lock::Lock as Lock;
 
 pub static mut ACC_LOCK:Lock<i64> = Lock::new(0); 
