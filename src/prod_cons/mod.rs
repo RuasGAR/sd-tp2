@@ -1,0 +1,1 @@
+#[path ="prod_cons.rs"] pub mod produter_consumer;
