@@ -6,10 +6,4 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-<<<<<<< HEAD
 rand = "0.8.4"
-you-can = "0.0.14"
-sync-unsafe-cell = "0.1.0"
-=======
-rand = "0.8.4"
->>>>>>> f2b9a1b86aca7d46532fd981a35c562e513c0da9
