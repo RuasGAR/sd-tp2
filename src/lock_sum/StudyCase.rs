@@ -11,8 +11,8 @@ pub fn study_case() {
     let input_sizes: [usize;3] = [base.pow(7),base.pow(8),base.pow(9)];
 
     
-    for k in k_array {
-        for n in input_sizes {
+    for n in input_sizes {
+        for k in k_array {
             println!("Começando programa: N = {} e K = {}",n,k);
             for i in 0..10 {
                 println!("{}",i);

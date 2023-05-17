@@ -8,7 +8,7 @@ use prod_cons::produter_consumer::share_memory;
 use std::time::{Instant, Duration};
 
 fn main() {
-    let n_vetor = vec![1, 10, 100, 1000];
+    /* let n_vetor = vec![1, 10, 100, 1000];
     let m = 100000;
     let combination_vetor = vec![1,2,4,8];
 
@@ -51,8 +51,8 @@ fn main() {
 
 
         }
-    }
+    } */
 
-    //study_case();
-    //basic_test();
+    study_case();
+    
 }

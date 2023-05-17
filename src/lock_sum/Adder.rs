@@ -90,7 +90,7 @@ pub fn threaded_sum(n:usize,k:usize,n_vec:Vec<i8>) {
                     let mut partial_result:i64 = 0;
 
                     for j in start_index..end_index {
-                        // Vamos processar os valores k*workload + i para cada thread
+                        // Vamos processar os valores i*workload + i para cada thread
                         partial_result += n_vec[j] as i64; 
                     }
     
