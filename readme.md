@@ -1,5 +1,6 @@
-Projeto de Sistemas Distribuidos (COS-470), cadeira de Eng. da Computação e Informação da UFRJ.
-Implementaçãõ de problema do consumidor-produtor e de somatório com primitivas de sincronização.
+# 2º Trabalho Prático de Sistemas Distribuidos (COS-470 - de Eng. da Computação e Informação - UFRJ)
+
+Implementação de problema do consumidor-produtor e de somatório com primitivas de sincronização. No primeiro, o lock utilizado foi implementado do zero, enquanto os semáforos da segunda parte são pertencentes às bibliotecas padrão do Rust.
 
 ## Instalação do Rust
 
